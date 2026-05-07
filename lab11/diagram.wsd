@@ -1,0 +1,201 @@
+@startuml Lab11_DesignPatterns
+
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #EEF2FF
+skinparam classBorderColor #4F46E5
+skinparam arrowColor #4F46E5
+skinparam classFontColor #1E1B4B
+skinparam packageBackgroundColor #E0E7FF
+skinparam packageBorderColor #6366F1
+skinparam titleFontSize 18
+skinparam titleFontColor #1E1B4B
+
+title Lab 11 — Design Patterns (TypeScript)
+
+' ============================================================
+' 1. SINGLETON
+' ============================================================
+package "1. Singleton" {
+  class ConfigManager {
+    - {static} instance: ConfigManager
+    - config: Map<string, string>
+    - ConfigManager()
+    + {static} getInstance(): ConfigManager
+    + get(key: string): string | undefined
+    + set(key: string, value: string): void
+    + display(): void
+  }
+  ConfigManager --> ConfigManager : getInstance()
+}
+
+' ============================================================
+' 2. PROTOTYPE
+' ============================================================
+package "2. Prototype" {
+  interface "Prototype<T>" {
+    + clone(): T
+  }
+  class Student {
+    + name: string
+    + age: number
+    + major: string
+    + Student(name, age, major)
+    + clone(): Student
+    + display(): void
+  }
+  "Prototype<T>" <|.. Student
+}
+
+' ============================================================
+' 3. BUILDER
+' ============================================================
+package "3. Builder" {
+  class House {
+    + windows: number
+    + doors: number
+    + roof: string
+    + garage: boolean
+    + display(): void
+  }
+
+  interface HouseBuilder {
+    + setWindows(count: number): HouseBuilder
+    + setDoors(count: number): HouseBuilder
+    + setRoof(type: string): HouseBuilder
+    + setGarage(has: boolean): HouseBuilder
+    + build(): House
+  }
+
+  class ModernHouseBuilder {
+    - house: House
+    + setWindows(count: number): HouseBuilder
+    + setDoors(count: number): HouseBuilder
+    + setRoof(type: string): HouseBuilder
+    + setGarage(has: boolean): HouseBuilder
+    + build(): House
+  }
+
+  class LuxuryHouseBuilder {
+    - house: House
+    + setWindows(count: number): HouseBuilder
+    + setDoors(count: number): HouseBuilder
+    + setRoof(type: string): HouseBuilder
+    + setGarage(has: boolean): HouseBuilder
+    + build(): House
+  }
+
+  class HouseDirector {
+    + buildModernHouse(builder: HouseBuilder): House
+    + buildLuxuryHouse(builder: HouseBuilder): House
+  }
+
+  HouseBuilder <|.. ModernHouseBuilder
+  HouseBuilder <|.. LuxuryHouseBuilder
+  ModernHouseBuilder ..> House : creates
+  LuxuryHouseBuilder ..> House : creates
+  HouseDirector --> HouseBuilder : uses
+}
+
+' ============================================================
+' 4. FACTORY
+' ============================================================
+package "4. Factory" {
+  interface PaymentMethod {
+    + pay(amount: number): void
+    + validate(): boolean
+  }
+
+  class CreditCardPayment {
+    + pay(amount: number): void
+    + validate(): boolean
+  }
+
+  class PayPalPayment {
+    + pay(amount: number): void
+    + validate(): boolean
+  }
+
+  class BankTransferPayment {
+    + pay(amount: number): void
+    + validate(): boolean
+  }
+
+  class PaymentFactory {
+    + {static} create(type: string): PaymentMethod
+  }
+
+  PaymentMethod <|.. CreditCardPayment
+  PaymentMethod <|.. PayPalPayment
+  PaymentMethod <|.. BankTransferPayment
+  PaymentFactory ..> PaymentMethod : creates
+}
+
+' ============================================================
+' 5. ABSTRACT FACTORY
+' ============================================================
+package "5. Abstract Factory" {
+  interface Button {
+    + render(): void
+  }
+  interface Checkbox {
+    + render(): void
+  }
+  interface Slider {
+    + render(): void
+  }
+
+  interface GUIFactory {
+    + createButton(): Button
+    + createCheckbox(): Checkbox
+    + createSlider(): Slider
+  }
+
+  class WindowsButton {
+    + render(): void
+  }
+  class WindowsCheckbox {
+    + render(): void
+  }
+  class WindowsSlider {
+    + render(): void
+  }
+  class WindowsFactory {
+    + createButton(): Button
+    + createCheckbox(): Checkbox
+    + createSlider(): Slider
+  }
+
+  class MacButton {
+    + render(): void
+  }
+  class MacCheckbox {
+    + render(): void
+  }
+  class MacSlider {
+    + render(): void
+  }
+  class MacFactory {
+    + createButton(): Button
+    + createCheckbox(): Checkbox
+    + createSlider(): Slider
+  }
+
+  Button <|.. WindowsButton
+  Button <|.. MacButton
+  Checkbox <|.. WindowsCheckbox
+  Checkbox <|.. MacCheckbox
+  Slider <|.. WindowsSlider
+  Slider <|.. MacSlider
+
+  GUIFactory <|.. WindowsFactory
+  GUIFactory <|.. MacFactory
+
+  WindowsFactory ..> WindowsButton : creates
+  WindowsFactory ..> WindowsCheckbox : creates
+  WindowsFactory ..> WindowsSlider : creates
+  MacFactory ..> MacButton : creates
+  MacFactory ..> MacCheckbox : creates
+  MacFactory ..> MacSlider : creates
+}
+
+@enduml

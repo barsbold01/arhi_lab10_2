@@ -1,0 +1,44 @@
+@startuml Lab11_DesignPatterns
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #EEF2FF
+skinparam classBorderColor #4F46E5
+skinparam arrowColor #4F46E5
+skinparam classFontColor #1E1B4B
+skinparam packageBackgroundColor #F0F4FF
+skinparam packageBorderColor #818CF8
+skinparam interfaceBackgroundColor #FEF9C3
+skinparam interfaceBorderColor #CA8A04
+skinparam titleFontSize 20
+skinparam defaultFontName Arial
+title Lab 11 — Design Patterns (TypeScript)
+' ============================================================
+' 1. SINGLETON
+' ============================================================
+package "1. Singleton Pattern" {
+  class ConfigManager {
+    - {static} instance: ConfigManager
+    - config: Map<string, string>
+    --
+    - ConfigManager()
+    + {static} getInstance(): ConfigManager
+    + get(key: string): string | undefined
+    + set(key: string, value: string): void
+    + display(): void
+  }
+  ConfigManager --> ConfigManager : "getInstance()\n(returns same instance)"
+}
+package "2. Prototype Pattern" {
+  interface "Prototype<T>" {
+    + clone(): T
+  }
+  class Student {
+    + name: string
+    + age: number
+    + major: string
+    --
+    + Student(name: string, age: number, major: string)
+    + clone(): Student
+    + display(): void
+  }
+  "Prototype<T>" <|.. Student : implements
+}
